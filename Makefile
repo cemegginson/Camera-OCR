@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -O2
+CXXFLAGS = -I/usr/local/include `pkg-config --cflags --libs tesseract`
 
 SRC = src/cameraocr.cpp
 OBJ = $(SRC:.cpp=.o)
