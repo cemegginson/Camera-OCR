@@ -10,10 +10,10 @@ BIN = cameraocr
 all: $(BIN)
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $<
+	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 $(BIN): $(OBJ)
-	$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
 $(OBJ): $(HDR)
 
