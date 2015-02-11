@@ -1,17 +1,21 @@
 CXX = g++
-CXXFLAGS = --std=c++11 -O2
+CXXFLAGS = -O2
 
-OBJ = cameraocr.o cameraocr.cpp
-HDR = cameraocr.h
+SRC = src/cameraocr.cpp
+OBJ = $(SRC:.cpp=.o)
+HDR = src/cameraocr.h
 
 BIN = cameraocr
 
 all: $(BIN)
 
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $<
+
 $(BIN): $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJ)
 
-	$(OBJ): $(HDR)
+$(OBJ): $(HDR)
 
-	clean:
-		rm $(OBJ) $(BIN)
+clean:
+	$(RM) $(OBJ) $(BIN)
