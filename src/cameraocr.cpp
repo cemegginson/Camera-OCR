@@ -16,14 +16,14 @@ int main (int argc, char** argv) {
     tess.Init(NULL, lang, tesseract::OEM_DEFAULT);
     tess.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
 
-    file* fin = fopen(filename, "rb");
+    FILE* fin = fopen(filename, "rb");
     if (fin == NULL) {
         std::cout << "Cannot open " << filename << std::endl;
         return -1;
     }
     fclose(fin);
 
-    string text;
+    STRING text;
     if (!tess.ProcessPages(filename, NULL, 0, &text)) {
         std::cout << "Error during processing." << std::endl;
         return -1;
