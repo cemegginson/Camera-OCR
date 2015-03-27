@@ -8,32 +8,37 @@ int main(int argc, char** argv) {
     }
 
     while(1==1) {
-        cv::Mat im;
-        cap >> im;
-        if (im.empty()) {
-            std::cout << "Cannot open source image!" << std::endl;
-            return -1;
-        }
-
-        cv::Mat contrast;
-        im.convertTo(contrast, -1, 2, 0);
-        //cv::imwrite("output.jpg", contrast);
-
-        cv::Mat gray;
-        cv::cvtColor(contrast, gray, CV_BGR2GRAY);
-
-        cv::Mat blur;
-        cv::GaussianBlur(gray, blur, cv::Size(35.0, 35.0), cv::BORDER_DEFAULT);
-
-        cv::imwrite("output.jpg", blur);
-
-        tesseract::TessBaseAPI tess;
-        tess.Init(NULL, "eng", tesseract::OEM_DEFAULT);
-        tess.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
-        tess.SetImage((uchar*)blur.data, blur.cols, blur.rows, 1, blur.cols);
-
-        char* out = tess.GetUTF8Text();
-        std::cout << out << std::endl;
+        std::cout << camera_ocr(cap) << std::endl;
     }
     return 0;
+}
+
+char* camera_ocr(cv::VideoCapture cap) {
+    cv::Mat im1, im2;
+    cap >> im1;
+
+    // Double the contrast
+    im1.convertTo(im2, -1, 2, 0);
+
+    // Convert to Grayscale
+    cv::cvtColor(im2, im1, CV_BGR2GRAY);
+
+    /*
+    Apply adaptive thresholding to isolate text.
+    The last two arguments are the really important ones.
+    The next to last argument is the size of the neighborhood used
+    to calculate the threshold value for the pixel, and the last one
+    is the constant that's subtracted from the mean
+    */
+    cv::adaptiveThreshold(im1, im2, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 65, 15);
+
+    cv::imwrite("output.jpg", im2);
+
+    tesseract::TessBaseAPI tess;
+    tess.Init(NULL, "eng", tesseract::OEM_DEFAULT);
+    tess.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
+    tess.SetImage((uchar*)im2.data, im2.cols, im2.rows, 1, im2.cols);
+
+    char* out = tess.GetUTF8Text();
+    return out;
 }

@@ -5,3 +5,5 @@
 #include <tesseract/baseapi.h>
 #include <tesseract/strngs.h>
 #include <iostream>
+
+char* camera_ocr(cv::VideoCapture cap);
