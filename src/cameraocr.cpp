@@ -32,7 +32,7 @@ char* camera_ocr(cv::VideoCapture cap) {
     */
     cv::adaptiveThreshold(im1, im2, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 65, 15);
 
-    cv::imwrite("output.jpg", im2);
+    // cv::imwrite("output.jpg", im2);
 
     tesseract::TessBaseAPI tess;
     tess.Init(NULL, "eng", tesseract::OEM_DEFAULT);
