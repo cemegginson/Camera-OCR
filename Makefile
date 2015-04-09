@@ -6,7 +6,7 @@ SRC = src/cameraocr.cpp
 OBJ = $(SRC:.cpp=.o)
 HDR = src/cameraocr.h
 
-BIN = cameraocr
+BIN = bin/cameraocr
 
 all: $(BIN)
 
