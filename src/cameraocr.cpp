@@ -1,3 +1,5 @@
+#include <iostream>
+#include <string>
 #include "cameraocr.h"
 
 int main(int argc, char** argv) {
@@ -14,30 +16,45 @@ int main(int argc, char** argv) {
 }
 
 char* camera_ocr(cv::VideoCapture cap) {
-    cv::Mat im1, im2;
-    cap >> im1;
+    int iLowH = 100;
+    int iHighH = 184;
 
-    // Double the contrast
-    im1.convertTo(im2, -1, 2, 0);
+    int iLowS = 107;
+    int iHighS = 255;
 
-    // Convert to Grayscale
-    cv::cvtColor(im2, im1, CV_BGR2GRAY);
+    int iLowV = 112;
+    int iHighV = 255;
 
-    /*
-    Apply adaptive thresholding to isolate text.
-    The last two arguments are the really important ones.
-    The next to last argument is the size of the neighborhood used
-    to calculate the threshold value for the pixel, and the last one
-    is the constant that's subtracted from the mean
-    */
-    cv::adaptiveThreshold(im1, im2, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 65, 15);
+    cv::Mat imOrig;
+    if(!cap.read(orig)) {
+        std::cerr << "Failed to read image" << std::endl;
+    }
 
-    // cv::imwrite("output.jpg", im2);
+    // Convert image to HSV format
+    cv::Mat imHSV;
+    cvtColor(imOrig, imHSV, COLOR_BGR2HSV);
 
+    // Threshold the image
+    cv::Mat imThresh;
+    inRange(imHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imThresh);
+
+    // morphological opening (remove small objects from the foreground)
+    erode(imThresh, imThresh, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+    dilate(imThresh, imThresh, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+
+    // morphological closing (fill small holes in the foreground)
+    dilate(imThresh, imThresh, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+    erode(imThresh, imThresh, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+
+    // Test code
+    imshow("Original", imOrig);
+    imshow("Thresholded Image", imThresh);
+
+    // OCR
     tesseract::TessBaseAPI tess;
     tess.Init(NULL, "eng", tesseract::OEM_DEFAULT);
     tess.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
-    tess.SetImage((uchar*)im2.data, im2.cols, im2.rows, 1, im2.cols);
+    tess.SetImage((uchar*)imThresh.data, imThresh.cols, imThresh.rows, 1, imThresh.cols);
 
     char* out = tess.GetUTF8Text();
     return out;
