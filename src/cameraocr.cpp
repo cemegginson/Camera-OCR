@@ -9,6 +9,12 @@ int main(int argc, char** argv) {
         return -1;
     }
 
+    // For testing on laptop
+    system("v4l2-ctl -d 1 -c white_balance_temperature_auto=0");
+
+    // For use on Raspberry Pi
+    // system("v4l2-ctl -c white_balance_temperature_auto=0");
+
     while(true) {
         std::cout << camera_ocr(cap) << std::endl;
     }
