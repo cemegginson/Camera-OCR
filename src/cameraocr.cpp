@@ -4,20 +4,21 @@
 
 int main(int argc, char** argv) {
 
-    cv::VideoCapture cap(0);
+    cv::VideoCapture cap(1);
     if(!cap.isOpened()) {
         return -1;
     }
 
-    while(1==1) {
+    while(true) {
         std::cout << camera_ocr(cap) << std::endl;
     }
     return 0;
 }
 
 char* camera_ocr(cv::VideoCapture cap) {
+    // Set values to display only blue and pink panels
     int iLowH = 100;
-    int iHighH = 184;
+    int iHighH = 179;
 
     int iLowS = 107;
     int iHighS = 255;
@@ -25,30 +26,36 @@ char* camera_ocr(cv::VideoCapture cap) {
     int iLowV = 112;
     int iHighV = 255;
 
+
     cv::Mat imOrig;
-    if(!cap.read(orig)) {
+    if(!cap.read(imOrig)) {
         std::cerr << "Failed to read image" << std::endl;
     }
 
     // Convert image to HSV format
     cv::Mat imHSV;
-    cvtColor(imOrig, imHSV, COLOR_BGR2HSV);
+    cv::cvtColor(imOrig, imHSV, cv::COLOR_BGR2HSV);
 
     // Threshold the image
     cv::Mat imThresh;
-    inRange(imHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imThresh);
+    cv::inRange(imHSV, cv::Scalar(iLowH, iLowS, iLowV), cv::Scalar(iHighH, iHighS, iHighV), imThresh);
 
     // morphological opening (remove small objects from the foreground)
-    erode(imThresh, imThresh, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-    dilate(imThresh, imThresh, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+    cv::erode(imThresh, imThresh, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+    cv::dilate(imThresh, imThresh, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
     // morphological closing (fill small holes in the foreground)
-    dilate(imThresh, imThresh, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-    erode(imThresh, imThresh, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+    cv::dilate(imThresh, imThresh, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+    cv::erode(imThresh, imThresh, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
-    // Test code
-    imshow("Original", imOrig);
-    imshow("Thresholded Image", imThresh);
+    // Test code to display processed images
+    cv::imshow("Original", imOrig);
+    cv::imshow("Thresholded Image", imThresh);
+    // Gotta put this here to make imshow happy
+    if (cv::waitKey(30) == 27) {
+        std::cout << "esc key is pressed by user" << std::endl;
+        //break;
+    }
 
     // OCR
     tesseract::TessBaseAPI tess;
