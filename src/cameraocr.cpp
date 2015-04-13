@@ -10,10 +10,10 @@ int main(int argc, char** argv) {
     }
 
     // For testing on laptop
-    system("v4l2-ctl -d 1 -c white_balance_temperature_auto=0");
+    // system("v4l2-ctl -d 1 -c white_balance_temperature_auto=0");
 
     // For use on Raspberry Pi
-    // system("v4l2-ctl -c white_balance_temperature_auto=0");
+    system("v4l2-ctl -c white_balance_temperature_auto=0");
 
     while(true) {
         std::cout << camera_ocr(cap) << std::endl;
@@ -54,14 +54,14 @@ char* camera_ocr(cv::VideoCapture cap) {
     cv::dilate(imThresh, imThresh, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
     cv::erode(imThresh, imThresh, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
-    // Test code to display processed images
-    cv::imshow("Original", imOrig);
-    cv::imshow("Thresholded Image", imThresh);
-    // Gotta put this here to make imshow happy
-    if (cv::waitKey(30) == 27) {
-        std::cout << "esc key is pressed by user" << std::endl;
-        //break;
-    }
+    // // Test code to display processed images
+    // cv::imshow("Original", imOrig);
+    // cv::imshow("Thresholded Image", imThresh);
+    // // Gotta put this here to make imshow happy
+    // if (cv::waitKey(30) == 27) {
+    //     std::cout << "esc key is pressed by user" << std::endl;
+    //     //break;
+    // }
 
     // OCR
     tesseract::TessBaseAPI tess;
