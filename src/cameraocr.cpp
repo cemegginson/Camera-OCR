@@ -4,7 +4,7 @@
 
 int main(int argc, char** argv) {
 
-    cv::VideoCapture cap(1);
+    cv::VideoCapture cap(0);
     if(!cap.isOpened()) {
         return -1;
     }
@@ -14,6 +14,11 @@ int main(int argc, char** argv) {
 
     // For use on Raspberry Pi
     system("v4l2-ctl -c white_balance_temperature_auto=0");
+    system("v4l2-ctl -c focus_absolute=16");
+    system("v4l2-ctl -c saturation=100");
+    system("v4l2-ctl -c white_balance_temperature_auto=0");
+    system("v4l2-ctl -c brightness=144");
+    system("v4l2-ctl -c white_balance_temperature=3269");
 
     while(true) {
         std::cout << camera_ocr(cap) << std::endl;
