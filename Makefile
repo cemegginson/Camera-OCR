@@ -1,5 +1,5 @@
 CXX = clang++
-CXXFLAGS = -I/usr/local/include -std=c++11 -g
+CXXFLAGS = -I/usr/local/include -std=c++11 -O2
 CXXLINKFLAGS = `pkg-config --cflags --libs opencv tesseract`
 
 SRC = src/cameraocr.cpp
