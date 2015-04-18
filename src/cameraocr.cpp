@@ -9,21 +9,21 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    // For testing on laptop
-    system("v4l2-ctl -d 1 -c white_balance_temperature_auto=0");
-    system("v4l2-ctl -d 1 -c focus_absolute=16");
-    system("v4l2-ctl -d 1 -c saturation=100");
-    system("v4l2-ctl -d 1 -c white_balance_temperature_auto=0");
-    system("v4l2-ctl -d 1 -c brightness=144");
-    system("v4l2-ctl -d 1 -c white_balance_temperature=3269");
+    // // For testing on laptop
+    // system("v4l2-ctl -d 1 -c white_balance_temperature_auto=0");
+    // system("v4l2-ctl -d 1 -c focus_absolute=16");
+    // system("v4l2-ctl -d 1 -c saturation=100");
+    // system("v4l2-ctl -d 1 -c white_balance_temperature_auto=0");
+    // system("v4l2-ctl -d 1 -c brightness=144");
+    // system("v4l2-ctl -d 1 -c white_balance_temperature=3269");
 
-    // // For use on Raspberry Pi
-    // system("v4l2-ctl -c white_balance_temperature_auto=0");
-    // system("v4l2-ctl -c focus_absolute=16");
-    // system("v4l2-ctl -c saturation=100");
-    // system("v4l2-ctl -c white_balance_temperature_auto=0");
-    // system("v4l2-ctl -c brightness=144");
-    // system("v4l2-ctl -c white_balance_temperature=3269");
+    // For use on Raspberry Pi
+    system("v4l2-ctl -c white_balance_temperature_auto=0");
+    system("v4l2-ctl -c focus_absolute=16");
+    system("v4l2-ctl -c saturation=100");
+    system("v4l2-ctl -c white_balance_temperature_auto=0");
+    system("v4l2-ctl -c brightness=144");
+    system("v4l2-ctl -c white_balance_temperature=3269");
 
     while(true) {
         std::cout << camera_ocr(cap) << std::endl;
