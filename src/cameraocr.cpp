@@ -4,21 +4,26 @@
 
 int main(int argc, char** argv) {
 
-    cv::VideoCapture cap(0);
+    cv::VideoCapture cap(1);
     if(!cap.isOpened()) {
         return -1;
     }
 
     // For testing on laptop
-    // system("v4l2-ctl -d 1 -c white_balance_temperature_auto=0");
+    system("v4l2-ctl -d 1 -c white_balance_temperature_auto=0");
+    system("v4l2-ctl -d 1 -c focus_absolute=16");
+    system("v4l2-ctl -d 1 -c saturation=100");
+    system("v4l2-ctl -d 1 -c white_balance_temperature_auto=0");
+    system("v4l2-ctl -d 1 -c brightness=144");
+    system("v4l2-ctl -d 1 -c white_balance_temperature=3269");
 
-    // For use on Raspberry Pi
-    system("v4l2-ctl -c white_balance_temperature_auto=0");
-    system("v4l2-ctl -c focus_absolute=16");
-    system("v4l2-ctl -c saturation=100");
-    system("v4l2-ctl -c white_balance_temperature_auto=0");
-    system("v4l2-ctl -c brightness=144");
-    system("v4l2-ctl -c white_balance_temperature=3269");
+    // // For use on Raspberry Pi
+    // system("v4l2-ctl -c white_balance_temperature_auto=0");
+    // system("v4l2-ctl -c focus_absolute=16");
+    // system("v4l2-ctl -c saturation=100");
+    // system("v4l2-ctl -c white_balance_temperature_auto=0");
+    // system("v4l2-ctl -c brightness=144");
+    // system("v4l2-ctl -c white_balance_temperature=3269");
 
     while(true) {
         std::cout << camera_ocr(cap) << std::endl;
@@ -28,13 +33,22 @@ int main(int argc, char** argv) {
 
 char* camera_ocr(cv::VideoCapture cap) {
     // Set values to display only blue and pink panels
-    int iLowH = 100;
+    // int iLowH = 0;
+    // int iHighH = 179;
+    //
+    // int iLowS = 107;
+    // int iHighS = 255;
+    //
+    // int iLowV = 112;
+    // int iHighV = 255;
+
+    int iLowH = 0;
     int iHighH = 179;
 
-    int iLowS = 107;
+    int iLowS = 12;
     int iHighS = 255;
 
-    int iLowV = 112;
+    int iLowV = 105;
     int iHighV = 255;
 
 
@@ -59,14 +73,14 @@ char* camera_ocr(cv::VideoCapture cap) {
     cv::dilate(imThresh, imThresh, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
     cv::erode(imThresh, imThresh, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
-    // // Test code to display processed images
-    // cv::imshow("Original", imOrig);
-    // cv::imshow("Thresholded Image", imThresh);
-    // // Gotta put this here to make imshow happy
-    // if (cv::waitKey(30) == 27) {
-    //     std::cout << "esc key is pressed by user" << std::endl;
-    //     //break;
-    // }
+    // Test code to display processed images
+    cv::imshow("Original", imOrig);
+    cv::imshow("Thresholded Image", imThresh);
+    // Gotta put this here to make imshow happy
+    if (cv::waitKey(30) == 27) {
+        std::cout << "esc key is pressed by user" << std::endl;
+        //break;
+    }
 
     // OCR
     tesseract::TessBaseAPI tess;
